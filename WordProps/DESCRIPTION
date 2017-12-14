@@ -1,0 +1,13 @@
+Package: WordProps
+Type: Package
+Title: Insert Data into Word Reproducibly
+Version: 0.1.0
+Author: Isaac Gravestock
+Maintainer: Isaac Gravestock <isaac.gravestock@usz.ch>
+Description: Insert data from R into a Word docx as a document property, to be included in tables and in text.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: xml2 (>= 1.0.0),
+officer
+RoxygenNote: 6.0.1
