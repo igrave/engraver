@@ -8,6 +8,5 @@ Description: Insert data from R into a Word docx as a document property, to be i
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Imports: xml2 (>= 1.0.0),
-officer
+Imports: xml2 (>= 1.0.0), officer
 RoxygenNote: 6.0.1
