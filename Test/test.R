@@ -11,7 +11,7 @@ myxml <- read_from_rdocx(mydoc)
 get_names(myxml)
 
 #add a new property
-add_new_property(myxml, name = "Street", value = "Dienerstrasse")
+add_new_property(myxml, name = "Street", value = "Dienerstrasse 51")
 
 #check that it worked
 get_names(myxml)
@@ -25,5 +25,13 @@ officer::body_add_par(mydoc, "I live at ")
 #insert the variable into the text
 slip_in_docprop_field("Street",myxml, mydoc)
 
+#finish the sentence
+officer::slip_in_text(mydoc, ".")
+
 #save the document!
 print(mydoc, target="Test/FirstTry.docx")
+
+
+#Now open the document and update fields:
+# select all then press F9
+# 
