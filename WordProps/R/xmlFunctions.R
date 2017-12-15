@@ -97,7 +97,7 @@ get_values <- function(xml) {
 #set the value of a document property
 set_value <- function(xml, name, value) {
   i <- match(name, get_names(xml))
-  xml_set_text(xml_child(xml_child(xml,i)) value = as.character(value))
+  xml_set_text(xml_child(xml_child(xml,i)), value = as.character(value))
 }
 
 

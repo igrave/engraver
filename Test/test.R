@@ -24,7 +24,7 @@ get_values(myxml)
 #save it to the document
 save_to_rdocx(mydoc, myxml)
 
-#use officer to add a sentence
+#use officer to add a new paragraph
 officer::body_add_par(mydoc, "I live at ")
 
 #insert the variable into the text
