@@ -94,6 +94,14 @@ get_values <- function(xml) {
   sapply(seq_len(xml_length(xml)), function(i) xml_text(xml_child(xml_child(xml,i))))
 }
 
+#set the value of a document property
+set_value <- function(xml, name, value) {
+  i <- match(name, get_names(xml))
+  xml_set_text(xml_child(xml_child(xml,i)) value = as.character(value))
+}
+
+
+
 
 #xml to environment
 xml_to_environment <- function(xml){

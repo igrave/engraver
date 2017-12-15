@@ -9,12 +9,17 @@ myxml <- read_from_rdocx(mydoc)
 
 #see what is already there
 get_names(myxml)
+get_values(myxml)
+
+#update a value
+set_value(myxml, "Age", 30)
 
 #add a new property
 add_new_property(myxml, name = "Street", value = "Dienerstrasse 51")
 
 #check that it worked
 get_names(myxml)
+get_values(myxml)
 
 #save it to the document
 save_to_rdocx(mydoc, myxml)
