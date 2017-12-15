@@ -16,18 +16,52 @@
 # xml_add_child(a, fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}", pid="6", name="HEIGHT")
 # 
 
-create_xml <- function(name, value, pid=xml_length(xml)+2, xml) read_xml(paste0(
-  '<property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="',pid,'" name="', name,
-  '"><vt:lpwstr>', value,'</vt:lpwstr></property>'))
-
-
-
-add_new_property <- function(name, value, xml) {
-  if(name %in% get_names(xml)) stop("Property exists with this name.")
-  if(!is.character(name)) stop("name is not of type character")
-  if(!is.character(value)) stop("value is not of type character")
-  xml_add_child(create_xml(name,value,xml=xml),xml)
+create_custom_xml_root <- function(){
+  xml_new_root("Properties",
+               xmlns = "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties",
+               "xmlns:vt" = "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes")
 }
+
+
+
+# create_property_xml <- function(name, value, pid=xml_length(xml)+2, xml) read_xml(paste0(
+#   '<property fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}" pid="',pid,'" name="', name,
+#   '"><lpwstr>', value,'</lpwstr></property>'))
+
+
+
+add_new_property <- function(xml, name, value, type) {
+  
+  if(name %in% get_names(xml)) stop("Property exists with this name.")
+  if(!is.character(name)) stop("name is not of type character!")
+  
+  if(missing(type)){
+    if(is.numeric(value)) {
+      type <- "i4" 
+    } else if(is.logical(value)){
+      type <- "bool"
+    } else type <- "lpwstr"
+  }
+  
+  type <- match.arg(type, choices=c("lpwstr","bool","i4","filetime"))
+    # if(!is.character(value)) stop("value is not of type character")
+  
+  
+  
+  if(type=="bool") {
+    value <- ifelse(as.logical(value),"true","false")
+  }
+  
+  
+    xml_add_child(xml, "property", 
+                fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}",
+                pid=xml_length(xml)+2,
+                name=name)
+  
+  xml_add_child(xml_child(xml, xml_length(xml)),
+                paste0("vt:",type), value)
+}
+
 
 
 #Get the names of the document properties
@@ -79,45 +113,41 @@ xml_to_environment <- function(xml){
                           date      = strptime(values[i], format = "%Y-%m-%d"))
     )
   }
-  
-  
   return(e)
 }
 
-
-
-
-#xml to environment
-xml_to_environment <- function(xml){
-  e <- new.env()
+# environment to xml
+environment_to_xml <- function(env){
+  items_xml <- 
+    lapply(ls(env), function(i){
+      property <- list()
+      attr(property,"fmtid") <- "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"
+      attr(property,"pid") <- "0"
+      attr(property,"name") <- i
+      
+      #save logical
+      if(is.logical(env[[i]])){
+        property$bool <- ifelse(env[[i]],"true","false")
+        
+        #save numeric
+      } else if(is.numeric(env[[i]])){
+        property$i4 <- env[[i]]
+        
+        #save characters
+      } else if(is.character(env[[i]])){
+        property$lpwstr <- env[[i]]
+        
+      } else {
+        property$lpwstr <- as.character(x[[i]])
+      }
+      
+      property
+    })
   
-  names <- get_names(xml)
-  values <- get_values(xml)
-  types <- get_types(xml)
+  attr(items_xml,"xmlns") <-  "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties"
+  attr(items_xml,"xmlns:vt") <- "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
   
-  for(i in seq_along(names)){
-    assign(x = names[i], 
-           envir = e,
-           value = switch(as.character(types[i]),
-                          numeric   = as.numeric(values[i]),
-                          character = values[i],
-                          logical   = values[i]=="true",
-                          date      = strptime(values[i], format = "%Y-%m-%d"))
-    )
-  }
-  return(e)
-}
-
-# list to xml
-list_to_xml <- function(list){
-  
-  #save logical
-  
-  #save numeric
-  
-  #save characters
-  
-  #convert the rest to character and save
+  doc <- as_xml_document(list(xml = items_xml))
   
 }
 
