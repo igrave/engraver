@@ -16,6 +16,11 @@
 # xml_add_child(a, fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}", pid="6", name="HEIGHT")
 # 
 
+#' Create new xml object root
+#'
+#' @return Create new xml object
+#'
+#' @examples
 create_custom_xml_root <- function(){
   xml_new_root("Properties",
                xmlns = "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties",
@@ -30,6 +35,15 @@ create_custom_xml_root <- function(){
 
 
 
+#' Add a new property to xml object
+#'
+#' @param xml object
+#' @param name new property name
+#' @param value value to assign
+#' @param type type of property in c("lpwstr","bool","i4","filetime")
+#'
+#' @return Nothing
+#'
 add_new_property <- function(xml, name, value, type) {
   
   if(name %in% get_names(xml)) stop("Property exists with this name.")
@@ -44,7 +58,7 @@ add_new_property <- function(xml, name, value, type) {
   }
   
   type <- match.arg(type, choices=c("lpwstr","bool","i4","filetime"))
-    # if(!is.character(value)) stop("value is not of type character")
+  # if(!is.character(value)) stop("value is not of type character")
   
   
   
@@ -53,7 +67,7 @@ add_new_property <- function(xml, name, value, type) {
   }
   
   
-    xml_add_child(xml, "property", 
+  xml_add_child(xml, "property", 
                 fmtid="{D5CDD505-2E9C-101B-9397-08002B2CF9AE}",
                 pid=xml_length(xml)+2,
                 name=name)
@@ -64,24 +78,49 @@ add_new_property <- function(xml, name, value, type) {
 
 
 
-#Get the names of the document properties
+#' Get the names of the document properties
+#'
+#' @param xml object
+#'
+#' @return A vectors of characters with the names of document properties
+#'
 get_names <- function(xml) {
   sapply(seq_len(xml_length(xml)), function(i) xml_attr(xml_child(xml,i),"name"))
 }
 
 #set the names of the document properties
-set_names <- function(xml, values) {
-  sapply(seq_len(xml_length(xml)), function(i) xml_set_attr(xml_child(xml,i),"name",values[i]))
+#' Title
+#'
+#' @param xml object
+#' @param names new names
+#'
+#' @return Nothing
+#'
+set_names <- function(xml, names) {
+  sapply(seq_len(xml_length(xml)), function(i) xml_set_attr(xml_child(xml,i),"name",names[i]))
 }
 
 
-#set pids correctly
+
+#' set pids correctly
+#'
+#' @param xml object
+#'
+#' @return Nothing
+#'
 set_pids <- function(xml) {
   sapply(seq_len(xml_length(xml)), function(i) xml_set_attr(xml_child(xml,i),"pid",as.character(i+1)))
 }
 
 
-#Get the types of the document properties
+
+#' Get the xml types of the document properties
+#'
+#' @param xml object
+#'
+#' @return  vector defined by factor(x, levels = c("i4", "lpwstr","filetime", "bool"), labels = c("numeric","character","date","logical") 
+#' for types number, string, date and boolean.
+#'
 get_types <- function(xml) {
   a <- sapply(seq_len(xml_length(xml)), function(i) xml_name(xml_child(xml_child(xml,i))))
   factor(a, levels = c("i4", "lpwstr","filetime", "bool"), labels = c("numeric","character","date","logical"))
@@ -89,12 +128,25 @@ get_types <- function(xml) {
 
 
 
-#Get the values of the document properties
+#' Get the values of the document properties
+#'
+#' @param xml xml object
+#'
+#' @return Vector of values of the document properties as characters
+#'
 get_values <- function(xml) {
   sapply(seq_len(xml_length(xml)), function(i) xml_text(xml_child(xml_child(xml,i))))
 }
 
-#set the value of a document property
+#
+#' set the value of a document property
+#'
+#' @param xml xml object
+#' @param name name of property to change
+#' @param value new value
+#'
+#' @return Nothing
+#'
 set_value <- function(xml, name, value) {
   i <- match(name, get_names(xml))
   xml_set_text(xml_child(xml_child(xml,i)), value = as.character(value))
@@ -103,7 +155,13 @@ set_value <- function(xml, name, value) {
 
 
 
-#xml to environment
+
+#' Convert Word custom xml object to an environment
+#'
+#' @param xml object to convert to environment
+#'
+#' @return a new environment
+#'
 xml_to_environment <- function(xml){
   e <- new.env()
   
@@ -124,7 +182,13 @@ xml_to_environment <- function(xml){
   return(e)
 }
 
-# environment to xml
+
+#' environment to xml
+#'
+#' @param env An environment to convert to xml
+#'
+#' @return xml object for Word
+#'
 environment_to_xml <- function(env){
   items_xml <- 
     lapply(ls(env), function(i){
@@ -146,7 +210,7 @@ environment_to_xml <- function(env){
         property$lpwstr <- env[[i]]
         
       } else {
-        property$lpwstr <- as.character(x[[i]])
+        property$lpwstr <- as.character(env[[i]])
       }
       
       property
