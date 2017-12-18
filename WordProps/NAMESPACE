@@ -1,1 +1,5 @@
 exportPattern("^[[:alpha:]]+")
+
+import(xml2)
+
+importFrom(officer, slip_in_seqfield)
