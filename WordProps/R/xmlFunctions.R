@@ -20,7 +20,6 @@
 #'
 #' @return Create new xml object
 #'
-#' @examples
 create_custom_xml_root <- function(){
   xml_new_root("Properties",
                xmlns = "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties",

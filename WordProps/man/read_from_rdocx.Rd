@@ -2,16 +2,16 @@
 % Please edit documentation in R/loadProperties.R
 \name{read_from_rdocx}
 \alias{read_from_rdocx}
-\title{loadProperties}
+\title{Read custom.xml from rdocx object}
 \usage{
 read_from_rdocx(rdocx)
 }
 \arguments{
-\item{file}{A .docx file to read the data from}
+\item{rdocx}{object}
 }
 \value{
-A list of nodes
+xml object
 }
 \description{
-loadProperties
+Read custom.xml from rdocx object
 }

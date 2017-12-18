@@ -2,20 +2,18 @@
 % Please edit documentation in R/saveProperties.R
 \name{save_to_rdocx}
 \alias{save_to_rdocx}
-\title{saveProperties}
+\title{Save xml object to rdocx object}
 \usage{
 save_to_rdocx(rdocx, xml)
 }
 \arguments{
-\item{file}{A .docx file to save the data to}
+\item{rdocx}{object}
 
-\item{properties}{The list to save}
-
-\item{sourcefile}{A file to copy from and overwrite with the properties (Optional)}
+\item{xml}{object}
 }
 \value{
-A .docx file with the custom properties.
+nothing
 }
 \description{
-saveProperties
+Save xml object to rdocx object
 }
