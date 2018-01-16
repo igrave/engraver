@@ -188,39 +188,68 @@ xml_to_environment <- function(xml){
 #'
 #' @return xml object for Word
 #'
+#'#'
 environment_to_xml <- function(env){
-  items_xml <- 
-    lapply(ls(env), function(i){
-      property <- list()
-      attr(property,"fmtid") <- "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"
-      attr(property,"pid") <- "0"
-      attr(property,"name") <- i
-      
-      #save logical
-      if(is.logical(env[[i]])){
-        property$bool <- ifelse(env[[i]],"true","false")
-        
-        #save numeric
-      } else if(is.numeric(env[[i]])){
-        property$i4 <- env[[i]]
-        
-        #save characters
-      } else if(is.character(env[[i]])){
-        property$lpwstr <- env[[i]]
-        
-      } else {
-        property$lpwstr <- as.character(env[[i]])
-      }
-      
-      property
-    })
+  xml <- create_custom_xml_root()
   
-  attr(items_xml,"xmlns") <-  "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties"
-  attr(items_xml,"xmlns:vt") <- "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
-  
-  doc <- as_xml_document(list(xml = items_xml))
-  
+  lapply(ls(env), function(i){
+    
+    # save logical
+    if(is.logical(env[[i]])){
+      v <- ifelse(env[[i]],"true","false")
+      t <- "bool"
+      #save numeric
+    } else if(is.numeric(env[[i]])){
+      v <- env[[i]]
+      t <- "i4"
+      #save characters
+    } else if(is.character(env[[i]])){
+      v <- env[[i]]
+      t <- "lpwstr"
+    } else {
+      v <- as.character(env[[i]])
+      t <- "lpwstr"
+    }
+    
+    add_new_property(xml, name=i, value = v, type=t)
+  })
+  xml
 }
+
+# 
+# environment_to_xml <- function(env){
+#   items_xml <- 
+#     lapply(ls(env), function(i){
+#       property <- list()
+#       attr(property,"fmtid") <- "{D5CDD505-2E9C-101B-9397-08002B2CF9AE}"
+#       attr(property,"pid") <- "0"
+#       attr(property,"name") <- i
+#       
+#       #save logical
+#       if(is.logical(env[[i]])){
+#         property$bool <- ifelse(env[[i]],"true","false")
+#         
+#         #save numeric
+#       } else if(is.numeric(env[[i]])){
+#         property$i4 <- env[[i]]
+#         
+#         #save characters
+#       } else if(is.character(env[[i]])){
+#         property$lpwstr <- env[[i]]
+#         
+#       } else {
+#         property$lpwstr <- as.character(env[[i]])
+#       }
+#       
+#       property
+#     })
+#   
+#   attr(items_xml,"xmlns") <-  "http://schemas.openxmlformats.org/officeDocument/2006/custom-properties"
+#   attr(items_xml,"xmlns:vt") <- "http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"
+#   
+#   doc <- as_xml_document(list(xml = items_xml))
+#   
+# }
 
 
 
