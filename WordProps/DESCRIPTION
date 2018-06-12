@@ -1,4 +1,4 @@
-Package: WordProps
+Package: engraver
 Type: Package
 Title: Insert Data into Word Reproducibly
 Version: 0.1.0
